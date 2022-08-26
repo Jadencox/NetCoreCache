@@ -1,4 +1,5 @@
 using Cache;
+using Common.DictCache;
 using NetCoreCache;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -7,6 +8,7 @@ var Configuration = builder.Configuration;
 
 builder.Services.AddControllers();
 builder.Services.AddDbContexts(Configuration);
+builder.Services.AddDictTable(Configuration);
 #region ¿çÓò
 builder.Services.AddCors(cor =>
 {
@@ -29,6 +31,12 @@ builder.Services.AddMemoryCache().AddSingleton<ICacheFactory, MemoryCacheFactory
 var app = builder.Build();
 var a1 = builder.Services.BuildServiceProvider();
 ServiceProviderHelper.Configure(a1);
+
+using (var serviceScope = app.Services.GetService<IServiceScopeFactory>().CreateScope())
+{
+    var dictFactory = serviceScope.ServiceProvider.GetRequiredService<IDictFactory>();
+    dictFactory.Initialize();
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

@@ -12,6 +12,5 @@ namespace NetCoreCache.Models
         public virtual DbSet<SysUser> SysUser { get; set; }
 
         public virtual DbSet<Student> Student { get; set; }
-
     }
 }

@@ -5,6 +5,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Reflection;
+using Common.DictCache;
+using Common.DictContext;
+using Common.DictProviders;
+using Common.DictTables;
 
 namespace NetCoreCache
 {
@@ -65,6 +69,18 @@ namespace NetCoreCache
 
             return services;
         }
+
+        public static IServiceCollection AddDictTable(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddDbContext<DictDbContext>((service, dbOption) => dbOption.UseOracle11(configuration, service));
+
+            services.AddScoped<IDict<DeptDict>, DeptDictProvider>();
+
+            services.AddScoped<IDictFactory, DictFactory>();
+
+            return services;
+        }
+
 
         /// <summary>
         /// Oracle 11g Settings
